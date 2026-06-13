@@ -12,7 +12,6 @@ Falls back to parsing the HTML table if the RSC payload cannot be parsed.
 """
 
 import csv
-import datetime as dt
 import json
 import re
 import sys
@@ -22,10 +21,9 @@ from pathlib import Path
 from scrapling.fetchers import Fetcher
 
 URL = "https://www.tradestation.com/pricing/futures-margin-requirements/"
+SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT = (
-    Path(__file__).parent
-    / "margin_data"
-    / (f"futures_margin_rates_{dt.datetime.now().strftime('%Y-%m-%d_%H%M')}.csv")
+    SCRIPT_DIR / "margin_data" / f"futures_margin_rates_{datetime.now().strftime('%Y-%m-%d_%H%M')}.csv"
 )
 
 # Full column set from the RSC payload (includes hidden Product Group)
@@ -188,12 +186,14 @@ def scrape_margin_rates() -> list[list[str]]:
     sys.exit(1)
 
 
-def write_csv(data: list[list[str]], output_path: str) -> None:
+def write_csv(data: list[list[str]], output_path: Path) -> None:
     """Write the extracted data to a CSV file."""
     headers = data[0]
     rows = data[1:]
 
-    with open(output_path, "w", newline="", encoding="utf-8") as f:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with output_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(headers)
         writer.writerows(rows)
@@ -202,12 +202,7 @@ def write_csv(data: list[list[str]], output_path: str) -> None:
 
 
 def main():
-    if len(sys.argv) > 1:
-        output_path = sys.argv[1]
-    else:
-        output_path = DEFAULT_OUTPUT
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else DEFAULT_OUTPUT
 
     data = scrape_margin_rates()
     write_csv(data, output_path)
