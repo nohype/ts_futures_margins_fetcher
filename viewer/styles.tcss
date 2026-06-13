@@ -1,0 +1,131 @@
+/* Main layout */
+Screen {
+    background: $surface;
+}
+
+Header {
+    dock: top;
+}
+
+Footer {
+    dock: bottom;
+}
+
+/* Filter bar */
+FilterInput {
+    height: auto;
+    padding: 0 1;
+    align: center middle;
+}
+
+FilterInput Static {
+    width: 8;
+    content-align: right middle;
+    margin-right: 1;
+    color: $text-muted;
+}
+
+FilterInput Input {
+    width: 40;
+}
+
+/* Group toggle bar */
+GroupToggleBar {
+    layout: grid;
+    grid-size: 2 7;
+    grid-gutter: 0 1;
+    height: auto;
+    padding: 0 1;
+    border-bottom: solid $primary;
+}
+
+#groups_label {
+    color: $text-muted;
+    content-align: right middle;
+}
+
+GroupToggleBar Checkbox {
+    /* No width/min-width — content-determined */
+}
+
+/* Table */
+MarginTableWidget {
+    height: 1fr;
+}
+
+/* Right-align numeric columns */
+MarginTableWidget > .datatable--cursor {
+    /* DataTable handles alignment via add_column, so this is for fallback */
+}
+
+/* Modal styles */
+#group_modal_container {
+    width: 60;
+    height: auto;
+    max-height: 90%;
+    margin: 2 4;
+    padding: 1 2;
+    background: $surface;
+    border: solid $primary;
+    overflow-y: auto;
+}
+
+#modal_title {
+    text-style: bold;
+    color: $text;
+    content-align: center middle;
+    padding-bottom: 1;
+    width: 100%;
+}
+
+#modal_help {
+    color: $text-muted;
+    content-align: center middle;
+    padding-bottom: 1;
+}
+
+#modal_buttons {
+    align: center middle;
+    padding-top: 1;
+}
+
+/* Help modal */
+#help_modal_container {
+    width: 56;
+    height: auto;
+    max-height: 90%;
+    margin: 2 4;
+    padding: 1 2;
+    background: $surface;
+    border: solid $primary;
+    overflow-y: auto;
+}
+
+#help_title {
+    text-style: bold;
+    color: $accent;
+    content-align: center middle;
+    padding-bottom: 1;
+    width: 100%;
+}
+
+#help_sep {
+    color: $text-muted;
+    content-align: center middle;
+}
+
+.help_section {
+    text-style: bold;
+    color: $secondary;
+    padding-top: 1;
+}
+
+.help_row {
+    color: $text;
+    padding-left: 1;
+}
+
+#help_buttons {
+    align: center middle;
+    padding-top: 1;
+}

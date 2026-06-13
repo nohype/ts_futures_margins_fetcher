@@ -11,6 +11,7 @@ which includes a hidden "Product Group" column not shown in the rendered table.
 Falls back to parsing the HTML table if the RSC payload cannot be parsed.
 """
 
+import argparse
 import csv
 import json
 import re
@@ -23,7 +24,9 @@ from scrapling.fetchers import Fetcher
 URL = "https://www.tradestation.com/pricing/futures-margin-requirements/"
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT = (
-    SCRIPT_DIR / "margin_data" / f"futures_margin_rates_{datetime.now().strftime('%Y-%m-%d_%H%M')}.csv"
+    SCRIPT_DIR
+    / "margin_data"
+    / f"futures_margin_rates_{datetime.now().strftime('%Y-%m-%d_%H%M')}.csv"
 )
 
 # Full column set from the RSC payload (includes hidden Product Group)
@@ -202,10 +205,33 @@ def write_csv(data: list[list[str]], output_path: Path) -> None:
 
 
 def main():
-    output_path = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else DEFAULT_OUTPUT
+    parser = argparse.ArgumentParser(
+        description="Scrape TradeStation futures margin rates and optionally open the TUI viewer."
+    )
+    parser.add_argument(
+        "output",
+        nargs="?",
+        type=Path,
+        help="Output CSV file path. Defaults to margin_data/futures_margin_rates_<timestamp>.csv",
+    )
+    parser.add_argument(
+        "-i",
+        "--interactive",
+        action="store_true",
+        help="After scraping, open the TUI viewer with the scraped data.",
+    )
+    args = parser.parse_args()
+
+    output_path = args.output.resolve() if args.output else DEFAULT_OUTPUT
 
     data = scrape_margin_rates()
     write_csv(data, output_path)
+
+    if args.interactive:
+        print("Launching interactive viewer...")
+        from viewer.main import run_viewer
+
+        run_viewer(output_path)
 
 
 if __name__ == "__main__":
